@@ -33,7 +33,15 @@ IMAGE_HEIGHT = 300
 # CREATE OUTPUT FOLDER
 # =====================================================
 
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+try:
+    df = pd.read_csv(
+        CSV_FILE,
+        encoding="utf-8-sig",
+        on_bad_lines="skip"
+    )
+except Exception as e:
+    print(f"CSV read error: {e}")
+    exit(1)
 
 # =====================================================
 # LOAD CSV
