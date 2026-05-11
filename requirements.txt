@@ -1,0 +1,5 @@
+pandas
+requests
+pillow
+deep-translator
+python-dotenv
