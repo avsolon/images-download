@@ -37,7 +37,8 @@ try:
     df = pd.read_csv(
         CSV_FILE,
         encoding="utf-8-sig",
-        on_bad_lines="skip"
+        on_bad_lines="skip",
+        engine="python"
     )
 except Exception as e:
     print(f"CSV read error: {e}")
