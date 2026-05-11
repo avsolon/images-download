@@ -33,6 +33,12 @@ IMAGE_HEIGHT = 300
 # CREATE OUTPUT FOLDER
 # =====================================================
 
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+# =====================================================
+# LOAD CSV
+# =====================================================
+
 try:
     df = pd.read_csv(
         CSV_FILE,
@@ -43,12 +49,6 @@ try:
 except Exception as e:
     print(f"CSV read error: {e}")
     exit(1)
-
-# =====================================================
-# LOAD CSV
-# =====================================================
-
-df = pd.read_csv(CSV_FILE, encoding="utf-8-sig")
 
 print("\nCSV Columns:")
 print(df.columns)
