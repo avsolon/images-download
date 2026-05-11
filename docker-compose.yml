@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  image-downloader:
+    build: .
+    container_name: image-downloader
+    restart: "no"
+    env_file:
+      - .env
+    volumes:
+      - ./images:/app/images
+      - ./input.csv:/app/input.csv
