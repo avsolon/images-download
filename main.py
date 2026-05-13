@@ -129,46 +129,112 @@ def translate_text(text):
 # BUILD SEARCH QUERY
 # =====================================================
 
-def build_query(answer):
+def build_query(question, answer):
 
-    translated = translate_text(answer)
+    # combine question + answer
+    text = f"{question} {answer}"
+
+    # translate to english
+    translated = translate_text(text)
 
     query = translated
 
     lower = translated.lower()
 
-    if "mercury" in lower:
-        query += " planet"
+    # =====================================================
+    # SPACE / ASTRONOMY
+    # =====================================================
 
-    elif "venus" in lower:
-        query += " planet"
+    if any(word in lower for word in [
+        "planet",
+        "solar system",
+        "star",
+        "galaxy",
+        "moon",
+        "sun",
+        "mars",
+        "venus",
+        "mercury",
+        "jupiter",
+        "saturn",
+        "neptune",
+        "uranus",
+        "proxima",
+        "sirius",
+        "betelgeuse"
+    ]):
 
-    elif "earth" in lower:
-        query += " planet"
+        query += " space astronomy"
 
-    elif "mars" in lower:
-        query += " planet"
+    # =====================================================
+    # GEOGRAPHY
+    # =====================================================
 
-    elif "jupiter" in lower:
-        query += " planet"
+    elif any(word in lower for word in [
+        "ocean",
+        "lake",
+        "river",
+        "mountain",
+        "desert",
+        "country",
+        "capital",
+        "forest"
+    ]):
 
-    elif "saturn" in lower:
-        query += " planet"
+        query += " nature landscape"
 
-    elif "neptune" in lower:
-        query += " planet"
+    # =====================================================
+    # ANIMALS
+    # =====================================================
 
-    elif "uranus" in lower:
-        query += " planet"
+    elif any(word in lower for word in [
+        "animal",
+        "tiger",
+        "lion",
+        "elephant",
+        "bird",
+        "fish",
+        "dog",
+        "cat"
+    ]):
 
-    elif "proxima" in lower:
-        query += " star"
+        query += " wildlife"
 
-    elif "sirius" in lower:
-        query += " star"
+    # =====================================================
+    # SCIENCE
+    # =====================================================
 
-    elif "betelgeuse" in lower:
-        query += " star"
+    elif any(word in lower for word in [
+        "physics",
+        "chemistry",
+        "atom",
+        "molecule",
+        "electricity"
+    ]):
+
+        query += " science illustration"
+
+    # =====================================================
+    # HISTORY
+    # =====================================================
+
+    elif any(word in lower for word in [
+        "war",
+        "king",
+        "empire",
+        "ancient",
+        "history"
+    ]):
+
+        query += " historical illustration"
+
+    # =====================================================
+    # DEFAULT
+    # =====================================================
+
+    else:
+
+        query += " high quality"
 
     return query
 
@@ -248,20 +314,25 @@ for index, row in df.iterrows():
 
     try:
 
+        question = str(row[question_col]).strip()
         answer = str(row[answer_col]).strip()
+
         filename = str(row[image_col]).strip()
 
         filepath = os.path.join(OUTPUT_DIR, filename)
 
+        # skip existing files
         if os.path.exists(filepath):
 
             print(f"[SKIP] {filename}")
 
             continue
 
-        query = build_query(answer)
+        # build improved search query
+        query = build_query(question, answer)
 
         print(f"\n[{index+1}/{total}]")
+        print(f"Question: {question}")
         print(f"Answer: {answer}")
         print(f"Search: {query}")
 
