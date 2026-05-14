@@ -254,20 +254,73 @@ def search_image(query):
         "safesearch": "true",
     }
 
-    response = requests.get(
-        url,
-        params=params,
-        timeout=30
-    )
+    try:
 
-    data = response.json()
+        response = requests.get(
+            url,
+            params=params,
+            timeout=30
+        )
 
-    hits = data.get("hits", [])
+        # =====================================================
+        # CHECK STATUS
+        # =====================================================
 
-    if not hits:
+        if response.status_code != 200:
+
+            print(f"[API ERROR] Status: {response.status_code}")
+
+            return None
+
+        # =====================================================
+        # SAFE JSON PARSE
+        # =====================================================
+
+        try:
+
+            data = response.json()
+
+        except Exception as e:
+
+            print(f"[JSON ERROR] {e}")
+
+            print(response.text[:300])
+
+            return None
+
+        hits = data.get("hits", [])
+
+        if not hits:
+
+            return None
+
+        # =====================================================
+        # FILTER BAD RESULTS
+        # =====================================================
+
+        for hit in hits:
+
+            tags = hit.get("tags", "").lower()
+
+            # avoid obvious bad matches
+            if "cartoon" in tags:
+                continue
+
+            if "anime" in tags:
+                continue
+
+            if "logo" in tags:
+                continue
+
+            return hit["largeImageURL"]
+
+        return hits[0]["largeImageURL"]
+
+    except Exception as e:
+
+        print(f"[SEARCH ERROR] {e}")
+
         return None
-
-    return hits[0]["largeImageURL"]
 
 # =====================================================
 # SAVE IMAGE
